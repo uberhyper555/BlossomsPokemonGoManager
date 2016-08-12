@@ -34,6 +34,8 @@ import java.awt.event.KeyListener;
 import java.util.*;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("serial")
 public class PokemonTab extends JPanel {
@@ -542,18 +544,26 @@ public class PokemonTab extends JPanel {
 
     private void refreshList() {
         List<Pokemon> pokes = new ArrayList<>();
-        String search = searchBar.getText().replaceAll(" ", "").replaceAll("_", "").replaceAll("snek", "ekans").toLowerCase();
+        String search = "";
+        for(String s:searchBar.getText().split(" ")){
+            search += "(?=.*"+s+")";
+        }
+        System.out.println(search);
+        Pattern pattern = Pattern.compile(search);
         try {
             go.getInventories().getPokebank().getPokemons().forEach(poke -> {
                 String searchme = PokeHandler.getLocalPokeName(poke) + "" + poke.getPokemonFamily() + poke.getNickname()
                         + poke.getMeta().getType1() + poke.getMeta().getType2() + poke.getMove1() + poke.getMove2()
                         + poke.getPokeball();
                 searchme = searchme.replaceAll("_FAST", "").replaceAll("FAMILY_", "").replaceAll("NONE", "").replaceAll("ITEM_", "").replaceAll("_", "").replaceAll(" ", "").toLowerCase();
-                if (searchme.contains(search)) {
+                Matcher matcher = pattern.matcher(searchme);
+
+                if (matcher.find()) {
+                    System.out.println(searchme);
                     pokes.add(poke);
                 }
             });
-            pt.constructNewTableModel(go, (search.equals("") || search.equals("searchpokémon...")
+            pt.constructNewTableModel(go, (search.equals("") || search.equals("search.*pokémon...")
                     ? go.getInventories().getPokebank().getPokemons() : pokes));
             for (int i = 0; i < pt.getModel().getColumnCount(); i++) {
                 JTableColumnPacker.packColumn(pt, i, 4);
