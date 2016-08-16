@@ -81,3 +81,5 @@ We use discord to organize our development and answer questions. We also post im
 
 #### Q: Can you include feature XY?
 - **A:** Maybe yes! Submit an issue explaing your suggestion as detailed as possible. We will look over it and see if we will include it and when (:
+NEW REPOSITORY HERE: https://github.com/Wolfsblvt/BlossomsPokemonGoManager
+
